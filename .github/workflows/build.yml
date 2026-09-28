@@ -26,7 +26,7 @@ jobs:
           if [ -f "./build.sh" ]; then
             ./build.sh
           else
-            xcodebuild -project app/Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build 2>/dev/null || xcodebuild -project Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build
+          xcodebuild -project app/Madeira/Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build 2>/dev/null || xcodebuild -project Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build
           fi
 
       - name: Package Payload to IPA
