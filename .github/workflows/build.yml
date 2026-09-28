@@ -25,7 +25,8 @@ jobs:
           chmod +x ./build.sh 2>/dev/null || true
           if [ -f "./build.sh" ]; then
             ./build.sh
-          else
+          else 
+          cd app/Madeira
           xcodebuild -project app/Madeira/Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build 2>/dev/null || xcodebuild -project Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build
           fi
 
