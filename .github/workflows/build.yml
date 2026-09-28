@@ -32,8 +32,23 @@ jobs:
           PROJ_DIR=$(dirname "$PROJ_FILE")
           PROJ_NAME=$(basename "$PROJ_FILE")
           
-          echo "Neutering code signing scripts so it doesn't crash..."
-          sed -i '' 's/codesign /echo /g' "$PROJ_FILE/project.pbxproj"
+          echo "Nuking the blocking dylib signing build phase script..."
+          python3 -c "
+          import re
+          pbx_path = '$PROJ_FILE/project.pbxproj'
+          with open(pbx_path, 'r') as f:
+              content = f.read()
+          pattern = r'(isa = PBXShellScriptBuildPhase.*?shellScript = \")(.*?)(\";)'
+          def replacer(match):
+              script_body = match.group(2)
+              if 'codesign' in script_body or 'dylib' in script_body:
+                  print('Neutralizing script phase containing signing logic.')
+                  return match.group(1) + 'echo \"Skipping dylib signing script phase\"' + match.group(3)
+              return match.group(0)
+          new_content = re.sub(pattern, replacer, content, flags=re.DOTALL)
+          with open(pbx_path, 'w') as f:
+              f.write(new_content)
+          "
           
           echo "Building project at: $PROJ_FILE"
           cd "$PROJ_DIR"
