@@ -32,7 +32,10 @@ jobs:
           PROJ_DIR=$(dirname "$PROJ_FILE")
           PROJ_NAME=$(basename "$PROJ_FILE")
           
-          echo "Found project at: $PROJ_FILE"
+          echo "Neutering code signing scripts so it doesn't crash..."
+          sed -i '' 's/codesign /echo /g' "$PROJ_FILE/project.pbxproj"
+          
+          echo "Building project at: $PROJ_FILE"
           cd "$PROJ_DIR"
           xcodebuild -project "$PROJ_NAME" \
             -scheme Madeira \
