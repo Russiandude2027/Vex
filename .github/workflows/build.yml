@@ -1,0 +1,42 @@
+name: Build Russiandude2027 IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repo with Submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Select Xcode Version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Run Build Scripts
+        run: |
+          chmod +x ./build.sh 2>/dev/null || true
+          if [ -f "./build.sh" ]; then
+            ./build.sh
+          else
+            xcodebuild -project app/Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build 2>/dev/null || xcodebuild -project Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build
+          fi
+
+      - name: Package Payload to IPA
+        run: |
+          mkdir -p Payload
+          cp -r build/*.app Payload/ 2>/dev/null || cp -r *.app Payload/ 2>/dev/null || true
+          zip -r Russiandude2027.ipa Payload
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Russiandude2027-IPA
+          path: Russiandude2027.ipa
