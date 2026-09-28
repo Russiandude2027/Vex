@@ -31,6 +31,10 @@ jobs:
           PROJ_DIR=$(dirname "$PROJ_FILE")
           PROJ_NAME=$(basename "$PROJ_FILE")
           
+          echo "Patching missing CpResource files..."
+          mkdir -p "$PROJ_DIR/x86_64-vcruntime"
+          touch "$PROJ_DIR/prefix-template.tar.gz"
+          
           echo "Found project at: $PROJ_FILE"
           cd "$PROJ_DIR"
           xcodebuild -project "$PROJ_NAME" \
