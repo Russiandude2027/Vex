@@ -1,9 +1,9 @@
-name: Build Russiandude2027 IPA
+name: Build IPA
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,17 +20,14 @@ jobs:
         with:
           xcode-version: latest-stable
 
-          - name: Run Build Scripts
-      run: |
-        xcodebuild -project app/Madeira/Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build
-
-          cd app/Madeira
-          xcodebuild -project app/Madeira/Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build 2>/dev/null || xcodebuild -project Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build
+      - name: Run Build Scripts
+        run: |
+          xcodebuild -project app/Madeira/Madeira.xcodeproj -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build
 
       - name: Package Payload to IPA
         run: |
           mkdir -p Payload
-          cp -r build/*.app Payload/ 2>/dev/null || cp -r *.app Payload/ 2>/dev/null || true
+          cp -r build/*.app Payload/ 2>/dev/null || true
           zip -r Russiandude2027.ipa Payload
 
       - name: Upload IPA Artifact
