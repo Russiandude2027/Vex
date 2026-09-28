@@ -32,22 +32,16 @@ jobs:
           PROJ_DIR=$(dirname "$PROJ_FILE")
           PROJ_NAME=$(basename "$PROJ_FILE")
           
-          echo "Nuking the blocking dylib signing build phase script..."
+          echo "Permanently wiping out the dylib signing build phase from project..."
           python3 -c "
           import re
           pbx_path = '$PROJ_FILE/project.pbxproj'
           with open(pbx_path, 'r') as f:
               content = f.read()
-          pattern = r'(isa = PBXShellScriptBuildPhase.*?shellScript = \")(.*?)(\";)'
-          def replacer(match):
-              script_body = match.group(2)
-              if 'codesign' in script_body or 'dylib' in script_body:
-                  print('Neutralizing script phase containing signing logic.')
-                  return match.group(1) + 'echo \"Skipping dylib signing script phase\"' + match.group(3)
-              return match.group(0)
-          new_content = re.sub(pattern, replacer, content, flags=re.DOTALL)
+          # Remove the entire build phase block for signing dylibs so Xcode ignores it
+          content = re.sub(r'/\* Begin PBXShellScriptBuildPhase section \*/.*?/\* End PBXShellScriptBuildPhase section \*/', '/* Begin PBXShellScriptBuildPhase section */\n\t\t/\* End PBXShellScriptBuildPhase section \*/', content, flags=re.DOTALL)
           with open(pbx_path, 'w') as f:
-              f.write(new_content)
+              f.write(content)
           "
           
           echo "Building project at: $PROJ_FILE"
