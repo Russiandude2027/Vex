@@ -24,8 +24,7 @@ jobs:
         run: |
           PROJ_FILE=$(find . -name "*.xcodeproj" | head -n 1)
           if [ -z "$PROJ_FILE" ]; then
-            echo "❌ ERROR: Could not find Madeira.xcodeproj in the repository!"
-            echo "Please check if Madeira.xcodeproj is committed to Git."
+            echo "❌ ERROR: Could not find Madeira.xcodeproj!"
             exit 1
           fi
           
@@ -34,7 +33,14 @@ jobs:
           
           echo "Found project at: $PROJ_FILE"
           cd "$PROJ_DIR"
-          xcodebuild -project "$PROJ_NAME" -scheme Madeira -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR="$GITHUB_WORKSPACE/build"
+          xcodebuild -project "$PROJ_NAME" \
+            -scheme Madeira \
+            -configuration Release \
+            -sdk iphoneos \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            CONFIGURATION_BUILD_DIR="$GITHUB_WORKSPACE/build"
 
       - name: Package Payload to IPA
         run: |
