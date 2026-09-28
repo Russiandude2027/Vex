@@ -37,9 +37,12 @@ jobs:
             -scheme Madeira \
             -configuration Release \
             -sdk iphoneos \
-            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_ALLOWED=YES \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            DEVELOPMENT_TEAM="" \
+            PROVISIONING_PROFILE_SPECIFIER="" \
             CONFIGURATION_BUILD_DIR="$GITHUB_WORKSPACE/build"
 
       - name: Package Payload to IPA
