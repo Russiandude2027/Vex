@@ -44,7 +44,7 @@ jobs:
             AD_HOC_CODE_SIGNING_ALLOWED=YES \
             DEVELOPMENT_TEAM="" \
             PROVISIONING_PROFILE_SPECIFIER="" \
-            OTHER_LDFLAGS="" \
+            ENABLE_USER_SCRIPT_SANDBOXING=NO \
             CONFIGURATION_BUILD_DIR="$GITHUB_WORKSPACE/build"
 
       - name: Package Payload to IPA
